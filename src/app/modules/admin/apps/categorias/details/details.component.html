@@ -1,0 +1,194 @@
+<div class="flex flex-col w-full">
+
+
+
+    <!-- Edit mode -->
+    <ng-container *ngIf="!editMode && newUser===false">
+
+        <!-- Header -->
+        <div class="dark:bg-accent-700">
+            <!-- Background -->
+            <ng-container *ngIf="companie?.background">
+                <img
+                    class="absolute inset-0 object-cover w-full h-full"
+                    [src]="companie?.background">
+            </ng-container>
+            <!-- Close button -->
+            <div class="flex items-center justify-end w-full max-w-3xl mx-auto pt-6 ">
+                <button
+                class="mat-primary"
+                    mat-icon-button
+                    [matTooltip]="'Cerrar'"
+                    [routerLink]="['../']">
+                    <mat-icon
+                        class="text-white"
+                        [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                </button>
+            </div>
+        </div>
+
+        <!-- Contact form -->
+        <div class="relative flex flex-col flex-auto items-center px-6 sm:px-12">
+            <div class="w-full max-w-3xl">
+                <form [formGroup]="FormUpdate">
+
+
+                    <!-- Name -->
+                    <div class="mt-8">
+                        <mat-form-field class="fuse-mat-no-subscript w-full">
+                            <mat-label>Nombre</mat-label>
+                            <mat-icon
+                                matPrefix
+                                class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                            <input
+                                matInput
+                                [formControlName]="'nombre'"
+                                [placeholder]="'Nombre'"
+                                [spellcheck]="false">
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Birthday -->
+                    <div class="mt-8" *ngIf="false">
+                        <mat-form-field class="fuse-mat-no-subscript w-full">
+                            <mat-label>Birthday</mat-label>
+                            <mat-icon
+                                matPrefix
+                                class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:cake'"></mat-icon>
+                            <input
+                                matInput
+                                [matDatepicker]="birthdayDatepicker"
+                                [formControlName]="'birthday'"
+                                [placeholder]="'Birthday'">
+                            <mat-datepicker-toggle
+                                matSuffix
+                                [for]="birthdayDatepicker">
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #birthdayDatepicker></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex items-center mt-10 -mx-6 sm:-mx-12 py-4 pr-4 pl-1 sm:pr-12 sm:pl-7 border-t bg-gray-50 dark:bg-transparent">
+                        <!-- Delete -->
+                        <button
+                            mat-button
+                            [color]="'warn'"
+                            [matTooltip]="'Eliminar'"
+                            (click)="deleteContact()">
+                            Eliminar
+                        </button>
+                        <!-- Cancel -->
+                        <!-- <button
+                            class="ml-auto"
+                            mat-button
+                            [matTooltip]="'Cancelar'"
+                            (click)="toggleEditMode(false)">
+                            Cancel
+                        </button> -->
+                        <!-- Save -->
+                        <button
+                            class="ml-auto"
+                            mat-flat-button
+                            [color]="'primary'"
+                            [disabled]="FormUpdate.invalid"
+                            [matTooltip]="'Guardar'"
+                            (click)="updateContact()">
+                            Guardar
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- Nueva informacion -->
+    <ng-container *ngIf="newUser">
+        <!-- Header -->
+        <div class="dark:bg-accent-700">
+            <!-- Background -->
+            <ng-container *ngIf="companie?.background">
+                <img
+                    class="absolute inset-0 object-cover w-full h-full"
+                    [src]="companie?.background">
+            </ng-container>
+            <!-- Close button -->
+            <div class="flex items-center justify-end w-full max-w-3xl mx-auto pt-6 ">
+                <button
+                class="mat-primary"
+                    mat-icon-button
+                    [matTooltip]="'Cerrar'"
+                    [routerLink]="['../']">
+                    <mat-icon
+                        class="text-white"
+                        [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                </button>
+            </div>
+        </div>
+
+        <!-- Contact form -->
+        <div class="relative flex flex-col flex-auto items-center px-6 sm:px-12">
+            <div class="w-full max-w-3xl">
+                <form [formGroup]="Form">
+
+
+                  <!-- Nombre -->
+                  <div class="mt-8">
+                    <mat-form-field class="fuse-mat-no-subscript w-full">
+                        <mat-label>Nombre</mat-label>
+                        <mat-icon
+                            matPrefix
+                            class="hidden sm:flex icon-size-5"
+                            [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                        <input
+                            matInput
+                            [formControlName]="'nombre'"
+                            [placeholder]="'Nombre'"
+                            [spellcheck]="false">
+                            <mat-error *ngIf="Form.get('nombre').hasError('required')">
+                              Se requiere nombre
+                            </mat-error>
+                    </mat-form-field>
+                  </div>
+
+
+                    <!-- Actions -->
+                    <div class="flex items-center mt-10 -mx-6 sm:-mx-12 py-4 pr-4 pl-1 sm:pr-12 sm:pl-7 border-t bg-gray-50 dark:bg-transparent">
+                        <!-- Delete -->
+                        <!-- <button
+                            mat-button
+                            [color]="'warn'"
+                            [matTooltip]="'Delete'"
+                            (click)="deleteContact()">
+                            Delete
+                        </button> -->
+                        <!-- Cancel -->
+                        <!-- <button
+                            class="ml-auto"
+                            mat-button
+                            [matTooltip]="'Cancel'"
+                            (click)="toggleEditMode(false)">
+                            Cancel
+                        </button> -->
+                        <!-- Save -->
+                        <button
+                            class="ml-2"
+                            mat-flat-button
+                            [color]="'primary'"
+                            [disabled]="Form.invalid"
+                            [matTooltip]="'Gurdar'"
+                            (click)="saveRegister()">
+                            Guardar
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </ng-container>
+
+
+</div>

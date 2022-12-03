@@ -1,0 +1,483 @@
+<div class="flex flex-col w-full">
+
+    <!-- View mode -->
+    <ng-container *ngIf="!editMode && newUser===false">
+
+        <!-- Header -->
+        <div class="dark:bg-accent-700">
+            <!-- Background -->
+            <ng-container *ngIf="companie?.background">
+                <img
+                    class="absolute inset-0 object-cover w-full h-full"
+                    [src]="companie?.background">
+            </ng-container>
+            <!-- Close button -->
+            <div class="flex items-center justify-end w-full max-w-3xl mx-auto pt-6 ">
+                <button
+                class="mat-primary"
+                    mat-icon-button
+                    [matTooltip]="'Cerrar'"
+                    [routerLink]="['../']">
+                    <mat-icon
+                        class="text-white"
+                        [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                </button>
+            </div>
+        </div>
+        <!-- Contact -->
+        <div class="relative flex flex-col flex-auto items-center p-6 pt-0 sm:p-12 sm:pt-0">
+            <div class="w-full max-w-3xl">
+
+                <!-- Avatar and actions -->
+                <div class="flex flex-auto items-end -mt-16">
+                    <!-- Avatar -->
+                    <div class="flex items-center justify-center w-32 h-32 rounded-full overflow-hidden ring-4 ring-bg-card" *ngIf="false">
+                        <img
+                            class="object-cover w-full h-full"
+                            *ngIf="contact.avatar"
+                            [src]="contact.avatar">
+                        <div
+                            class="flex items-center justify-center w-full h-full rounded overflow-hidden uppercase text-8xl font-bold leading-none bg-gray-200 text-gray-600 dark:bg-gray-700 dark:text-gray-200"
+                            *ngIf="!contact.avatar">
+                            {{contact.name.charAt(0)}}
+                        </div>
+                    </div>
+                    <!-- Actions -->
+                    <div class="mt-3 text-4xl font-bold truncate">{{contact.nombre}}</div>
+
+                    <div class="flex items-center ml-auto mb-1">
+
+
+                        <button
+                        mat-stroked-button
+                        [color]="'warn'"
+                        (click)="bajaArticulo()">
+                        <mat-icon
+                            class="icon-size-5"
+                            [svgIcon]="'heroicons_outline:arrow-down'"></mat-icon>
+                        <span class="ml-2">Baja</span>
+                        </button>
+
+                        <button
+                            mat-stroked-button
+                            (click)="toggleEditMode(true)">
+                            <mat-icon
+                                class="icon-size-5"
+                                [svgIcon]="'heroicons_solid:pencil-alt'"></mat-icon>
+                            <span class="ml-2">Editar</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Name -->
+
+
+                <div class="flex flex-col mt-4 pt-6 border-t space-y-8">
+                    <!-- Title -->
+                    <ng-container *ngIf="contact.categoria">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:briefcase'"></mat-icon>
+                            <div class="ml-6 leading-6 text-2xl font-bold truncate">Categoría: </div>
+                            <div class="ml-3 leading-6">{{contact.categoria}}</div>
+                        </div>
+                    </ng-container>
+
+
+                    <!-- Company -->
+                    <ng-container *ngIf="contact.lote">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:check-circle'"></mat-icon>
+                            <div class="ml-6 leading-6 text-2xl font-bold truncate">Lote: </div>
+                            <div class="ml-3 leading-6">{{contact.lote}}</div>
+                        </div>
+                    </ng-container>
+
+                    <!-- Company -->
+                    <ng-container *ngIf="contact.precio">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:cash'"></mat-icon>
+                            <div class="ml-6 leading-6 text-2xl font-bold truncate">Precio: </div>
+                            <div class="ml-3 leading-6">${{contact.precio}}</div>
+                        </div>
+                    </ng-container>
+
+                    <!-- caducidad -->
+                    <ng-container *ngIf="contact.caducidad">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
+                            <div class="ml-6 leading-6 text-2xl font-bold truncate">Caducidad: </div>
+                            <div class="ml-3 leading-6">{{contact.caducidad | date: 'MMM d, y' }}</div>
+                        </div>
+                    </ng-container>
+
+                    <!-- baja -->
+                    <ng-container *ngIf="contact.fecha_salida">
+                        <div class="flex sm:items-center">
+                            <mat-icon [svgIcon]="'heroicons_outline:calendar'"></mat-icon>
+                            <div class="ml-6 leading-6 text-2xl font-bold truncate">Fecha_salida: </div>
+                            <div class="ml-3 leading-6">{{contact.fecha_salida }}</div>
+                        </div>
+                    </ng-container>
+
+                    <!-- Notes
+                    <ng-container *ngIf="contact.notes">
+                        <div class="flex">
+                            <mat-icon [svgIcon]="'heroicons_outline:menu-alt-2'"></mat-icon>
+                            <div
+                                class="max-w-none ml-6 prose prose-sm"
+                                [innerHTML]="contact.notes"></div>
+                        </div>
+                    </ng-container> -->
+
+                    <div class="border-t">
+                        <div class="mt-3 text-2xl font-bold truncate">Historial</div>
+
+                        <ng-container  >
+
+                            <ng-container *ngIf="historial  as activities; else loading">
+                                <ng-container *ngIf="activities.length; else noActivity">
+                                    <div class="">
+                                        <ol>
+                                            <!-- Activities -->
+                                            <ng-container *ngFor="let activity of activities; let i = index; let first = first; let last = last; trackBy: trackByFn">
+
+                                                <!-- Date separator -->
+                                                <!-- <ng-container *ngIf="first || !isSameDay(activity.date, activities[i - 1].date)">
+                                                    <li class="relative flex py-7">
+                                                        <div class="relative py-2 px-8 text-md font-medium leading-5 rounded-full bg-primary text-on-primary">
+                                                            {{getRelativeFormat(activity.date)}}
+                                                        </div>
+                                                    </li>
+                                                </ng-container> -->
+
+                                                <!-- Activity -->
+                                                <li class="relative flex py-7">
+                                                    <!-- Line -->
+                                                    <ng-container *ngIf="!last && isSameDay(activity.fecha2, activities[i + 1].fecha2)">
+                                                        <div class="absolute top-7 left-5 w-0.5 h-full -ml-px bg-gray-300 dark:bg-gray-600"></div>
+                                                    </ng-container>
+
+                                                    <div class="relative flex flex-auto">
+                                                        <!-- Icon -->
+                                                        <ng-container *ngIf="activity.icon && !activity.image">
+                                                            <div class="flex shrink-0 items-center justify-center w-10 h-10 mr-4 rounded-full bg-gray-400">
+                                                                <mat-icon
+                                                                    class="icon-size-5 text-white"
+                                                                    [svgIcon]="activity.icon">
+                                                                </mat-icon>
+                                                            </div>
+                                                        </ng-container>
+
+                                                        <!-- Content -->
+                                                        <div class="flex flex-col flex-auto items-start">
+                                                            <!-- Description -->
+                                                            <ng-container *ngIf="activity.nombre">
+                                                                <div
+                                                                    [innerHTML]="activity.nombre"></div>
+                                                            </ng-container>
+                                                            <div class="flex flex-col sm:flex-row sm:items-center mt-2 sm:mt-1 sm:space-x-2 text-md leading-5">
+                                                                <!-- Date -->
+                                                                <div class="text-secondary">
+                                                                    {{activity.fecha}}
+                                                                </div>
+                                                            </div>
+                                                            <!-- Extra content -->
+                                                            <ng-container *ngIf="activity.extraContent">
+                                                                <div
+                                                                    class="mt-4 py-4 px-5 rounded-lg bg-gray-200 dark:bg-gray-800"
+                                                                    [innerHTML]="activity.extraContent"></div>
+                                                            </ng-container>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ng-container>
+                                        </ol>
+                                    </div>
+                                </ng-container>
+                            </ng-container>
+
+                        </ng-container>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- Edit mode -->
+    <ng-container *ngIf="editMode && newUser===false">
+
+        <!-- Header -->
+        <div class="dark:bg-accent-700">
+            <!-- Background -->
+            <ng-container *ngIf="companie?.background">
+                <img
+                    class="absolute inset-0 object-cover w-full h-full"
+                    [src]="companie?.background">
+            </ng-container>
+            <!-- Close button -->
+            <div class="flex items-center justify-end w-full max-w-3xl mx-auto pt-6 ">
+                <button
+                class="mat-primary"
+                    mat-icon-button
+                    [matTooltip]="'Cerrar'"
+                    [routerLink]="['../']">
+                    <mat-icon
+                        class="text-white"
+                        [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                </button>
+            </div>
+        </div>
+
+        <!-- Contact form -->
+        <div class="relative flex flex-col flex-auto items-center px-6 sm:px-12">
+            <div class="w-full max-w-3xl">
+                <form [formGroup]="FormUpdate">
+
+
+                    <!-- Name -->
+                    <div class="mt-8">
+                        <mat-form-field class="fuse-mat-no-subscript w-full">
+                            <mat-label>Nombre</mat-label>
+                            <mat-icon
+                                matPrefix
+                                class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                            <input
+                                matInput
+                                [formControlName]="'nombre'"
+                                [placeholder]="'Nombre'"
+                                [spellcheck]="false">
+                        </mat-form-field>
+                    </div>
+
+
+                    <!-- Precio -->
+                    <div class="mt-8">
+                        <mat-form-field class="fuse-mat-no-subscript w-full">
+                            <mat-label>Precio</mat-label>
+                            <mat-icon
+                                matPrefix
+                                class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                            <input
+                                matInput
+                                type="number"
+                                [formControlName]="'precio'"
+                                [placeholder]="'Precio'"
+                                [spellcheck]="false">
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Birthday -->
+                    <div class="mt-8" *ngIf="false">
+                        <mat-form-field class="fuse-mat-no-subscript w-full">
+                            <mat-label>Birthday</mat-label>
+                            <mat-icon
+                                matPrefix
+                                class="hidden sm:flex icon-size-5"
+                                [svgIcon]="'heroicons_solid:cake'"></mat-icon>
+                            <input
+                                matInput
+                                [matDatepicker]="birthdayDatepicker"
+                                [formControlName]="'birthday'"
+                                [placeholder]="'Birthday'">
+                            <mat-datepicker-toggle
+                                matSuffix
+                                [for]="birthdayDatepicker">
+                            </mat-datepicker-toggle>
+                            <mat-datepicker #birthdayDatepicker></mat-datepicker>
+                        </mat-form-field>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex items-center mt-10 -mx-6 sm:-mx-12 py-4 pr-4 pl-1 sm:pr-12 sm:pl-7 border-t bg-gray-50 dark:bg-transparent">
+                        <!-- Delete -->
+                        <button
+                            mat-button
+                            [color]="'warn'"
+                            [matTooltip]="'Eliminar'"
+                            (click)="deleteContact()">
+                            Eliminar
+                        </button>
+                        <!-- Cancel -->
+                        <button
+                            class="ml-auto"
+                            mat-button
+                            [matTooltip]="'Cancelar'"
+                            (click)="toggleEditMode(false)">
+                            Cancelar
+                        </button>
+                        <!-- Save -->
+                        <button
+                            class="ml-2"
+                            mat-flat-button
+                            [color]="'primary'"
+                            [disabled]="FormUpdate.invalid"
+                            [matTooltip]="'Guardar'"
+                            (click)="updateContact()">
+                            Guardar
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- Nueva informacion -->
+    <ng-container *ngIf="newUser">
+        <!-- Header -->
+        <div class="dark:bg-accent-700">
+            <!-- Background -->
+            <ng-container *ngIf="companie?.background">
+                <img
+                    class="absolute inset-0 object-cover w-full h-full"
+                    [src]="companie?.background">
+            </ng-container>
+            <!-- Close button -->
+            <div class="flex items-center justify-end w-full max-w-3xl mx-auto pt-6 ">
+                <button
+                class="mat-primary"
+                    mat-icon-button
+                    [matTooltip]="'Cerrar'"
+                    [routerLink]="['../']">
+                    <mat-icon
+                        class="text-white"
+                        [svgIcon]="'heroicons_outline:x'"></mat-icon>
+                </button>
+            </div>
+        </div>
+
+        <!-- Contact form -->
+        <div class="relative flex flex-col flex-auto items-center px-6 sm:px-12">
+            <div class="w-full max-w-3xl">
+                <form [formGroup]="Form">
+
+
+                  <!-- Nombre -->
+                  <div class="mt-8">
+                    <mat-form-field class="fuse-mat-no-subscript w-full">
+                        <mat-label>Nombre</mat-label>
+                        <mat-icon
+                            matPrefix
+                            class="hidden sm:flex icon-size-5"
+                            [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                        <input
+                            matInput
+                            [formControlName]="'nombre'"
+                            [placeholder]="'Nombre'"
+                            [spellcheck]="false">
+                            <mat-error *ngIf="Form.get('nombre').hasError('required')">
+                              Se requiere nombre
+                            </mat-error>
+                    </mat-form-field>
+                  </div>
+
+                  <!-- Lote -->
+                  <div class="mt-8">
+                    <mat-form-field class="fuse-mat-no-subscript w-full">
+                        <mat-label>Lote</mat-label>
+                        <mat-icon
+                            matPrefix
+                            class="hidden sm:flex icon-size-5"
+                            [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                        <input
+                            matInput
+                            [formControlName]="'lote'"
+                            [placeholder]="'Lote'"
+                            [spellcheck]="false">
+                            <mat-error *ngIf="Form.get('lote').hasError('required')">
+                              Se requiere lotes
+                            </mat-error>
+                    </mat-form-field>
+                  </div>
+
+                <!-- Nombre -->
+                <div class="mt-8">
+                    <mat-form-field class="fuse-mat-no-subscript w-full">
+                        <mat-label>Precio</mat-label>
+                        <mat-icon
+                            matPrefix
+                            class="hidden sm:flex icon-size-5"
+                            [svgIcon]="'heroicons_solid:user-circle'"></mat-icon>
+                        <input
+                            matInput
+                            type="number"
+                            [formControlName]="'precio'"
+                            [placeholder]="'Precio'"
+                            [spellcheck]="false">
+                            <mat-error *ngIf="Form.get('precio').hasError('required')">
+                                Se requiere precio
+                            </mat-error>
+                    </mat-form-field>
+                    </div>
+
+
+                  <!-- categorias -->
+                  <div class="mt-8" >
+                    <mat-form-field
+                    [ngClass]="formFieldHelpers"
+                    class="fuse-mat-no-subscript w-full">
+                    <mat-label>Categorias</mat-label>
+                    <mat-select [formControlName]="'categoria'">
+                        <mat-option [value]="item.nombre" *ngFor="let item of categorias">{{item.nombre}}</mat-option>
+                    </mat-select>
+                    <mat-icon
+                        class="icon-size-5"
+                        matPrefix
+                        [svgIcon]="'heroicons_solid:adjustments'"></mat-icon>
+                    </mat-form-field>
+                </div>
+
+
+                  <!-- Caducidad -->
+                  <div class="mt-8">
+                    <mat-form-field class="fuse-mat-no-subscript w-full">
+                        <mat-label>Caducidad</mat-label>
+                        <input matInput [matDatepicker]="picker" [formControlName]="'caducidad'">
+                        <mat-hint>MM/DD/YYYY</mat-hint>
+                        <mat-datepicker-toggle matIconSuffix [for]="picker" ></mat-datepicker-toggle>
+                        <mat-datepicker #picker [calendarHeaderComponent]="exampleHeader"></mat-datepicker>
+                      </mat-form-field>
+                    </div>
+
+
+                    <!-- Actions -->
+                    <div class="flex items-center mt-10 -mx-6 sm:-mx-12 py-4 pr-4 pl-1 sm:pr-12 sm:pl-7 border-t bg-gray-50 dark:bg-transparent">
+                        <!-- Delete -->
+                        <!-- <button
+                            mat-button
+                            [color]="'warn'"
+                            [matTooltip]="'Delete'"
+                            (click)="deleteContact()">
+                            Delete
+                        </button> -->
+                        <!-- Cancel -->
+                        <!-- <button
+                            class="ml-auto"
+                            mat-button
+                            [matTooltip]="'Cancel'"
+                            (click)="toggleEditMode(false)">
+                            Cancel
+                        </button> -->
+                        <!-- Save -->
+                        <button
+                            class="ml-2"
+                            mat-flat-button
+                            [color]="'primary'"
+                            [disabled]="Form.invalid"
+                            [matTooltip]="'Gurdar'"
+                            (click)="saveRegister()">
+                            Guardar
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </ng-container>
+
+
+</div>
