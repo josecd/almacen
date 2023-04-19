@@ -1,6 +1,7 @@
 {
   "name": "base-sentinel",
   "version": "1.0.0",
+  "main": "main.js",
   "description": "Base Sentinel",
   "author": "https://www.energetika.com",
   "scripts": {
@@ -8,7 +9,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "electron": "electron .",
+    "electron-build": "ng build --prod && electron ."
   },
   "private": true,
   "dependencies": {
@@ -71,6 +74,8 @@
     "@typescript-eslint/parser": "5.8.1",
     "autoprefixer": "10.4.1",
     "chroma-js": "2.1.2",
+    "electron": "^22.0.0",
+    "electron-packager": "^17.1.1",
     "eslint": "8.6.0",
     "eslint-plugin-import": "2.25.3",
     "eslint-plugin-jsdoc": "37.5.0",
